@@ -4,7 +4,7 @@
     import NamesList from "../components/NamesList.svelte";
     import ActionBar from "../components/ActionBar.svelte";
 
-    const people: Person[] = createRandomPeople(100);
+    const people: Person[] = createRandomPeople(400);
     let showAll = false;
     let loggedIn = false;
     let searchString: string = "";
@@ -26,13 +26,16 @@
     }
 
     function returnFilteredPeople(search: string): Person[] {
-        console.log(people.filter(person => {
-            return person.firstName.toLowerCase().includes(search.toLowerCase()) || person.lastName.toLowerCase().includes(search.toLowerCase());
-        }))
+        return people.filter(person => {
+            const fullName = `${person.firstName} ${person.lastName}`;
+            return fullName.toLowerCase().includes(search.toLowerCase())
+        });
     }
 </script>
 
-<div class={`${!showAll ? "h-screen pb-20" : ""} container mx-auto flex flex-col justify-center items-center font-sans text-zinc-900`}>
-    <NamesList {people} {showAll} on:click={() => showAll = true} />
-    <ActionBar {showAll} {loggedIn} on:input={(e) => searchString = e.target.value || ""} />
+<div class="h-screen flex">
+    <div class="container mx-auto grow flex flex-col justify-between items-center font-sans text-zinc-900">
+        <NamesList people={filteredPeople} {showAll} {searchString} on:click={() => showAll = true} />
+        <ActionBar {loggedIn} on:input={(e) => searchString = e.target.value || ""} />
+    </div>
 </div>
